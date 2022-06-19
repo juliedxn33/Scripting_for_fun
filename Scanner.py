@@ -5,7 +5,7 @@ import os
 import sys
 from pathlib import Path
 import xml.etree.ElementTree as Xet
-import pandas as pdpyt
+import pandas as pd
 
 def Hosts_Up_Check():
 	check_hosts_input_file = sys.argv[1]
@@ -32,18 +32,16 @@ def Hosts_Up_Check():
 	
 
 	
-def Nmap_Scan(f):
-	hosts_up_file = open(f, 'r')
-	print(f)
-	while True: 
-		hosts_up_ip = hosts_up_file.readline()
-		if not hosts_up_ip:
-			break
-		hosts_up_ip = hosts_up_ip.strip()
-		process = subprocess.run(['nmap', '-A', '-sV', '-p-', hosts_up_ip, '-oX', 'nmap_output.xml'], stdout=subprocess.PIPE, text=True)
-		break
-	return process.stdout
-	
+def Nmap_Scan():
+	hosts_up_file = open('hosts_up.txt', 'r')
+	#hosts_up_ip = hosts_up_file.readline()
+	#hosts_up_ip = hosts_up_ip.strip()
+	for line in hosts_up_file:
+		print(line)
+		line = line.strip()
+		file_name = line + '_nmap_output'
+		process = subprocess.run(['nmap', '-A', '-sV', '-p-', line, '-oA', file_name], universal_newlines=True)
+	hosts_up_file.close()
 
 def main():
 	hosts_up = Path('hosts_up.txt')
@@ -53,8 +51,8 @@ def main():
 	if nmap_scan.is_file():
 		os.remove(nmap_scan)
 	Hosts_Up_Check()
-	Nmap_Scan(Hosts_Up_Check)
-	Nmap_Clean_Up(Nmap_Scan)
+	Nmap_Scan()
+
 
 if __name__== '__main__':
 	main()		
