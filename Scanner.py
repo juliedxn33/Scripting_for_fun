@@ -1,48 +1,66 @@
+#!/usr/bin/env python3
 #scanning automation
 import subprocess
 import os
 import sys
+from pathlib import Path
 
-string_HU = 'Host is up'
-check_hosts_input_file = sys.argv[1]
+def Hosts_Up_Check():
+	check_hosts_input_file = sys.argv[1]
+	check_hosts_file = open(check_hosts_input_file, 'r')
+	while True: 
+		check_hosts_ip = check_hosts_file.readline()
+		if not check_hosts_ip:
+			break
+		check_hosts_ip = check_hosts_ip.strip()
+		process = subprocess.Popen(['nmap', '-sP', check_hosts_ip], stdout = subprocess.PIPE, 	universal_newlines=True)
+		hosts = []
+		while True:
+			with open('hosts_up.txt', 'a') as f: 	 
+				output = process.stdout.readline()
+				print(output)
+				hosts.append(output)
+				if 'Host is up' in output:
+					ip = (hosts[-2])
+					ip = ip[ip.find('(')+1:ip.find(')')]
+					ip = ip + "\n"
+					f.write(ip)
+					break
+	f.close()	
+	return f	
+	
 
-check_hosts_file = open(check_hosts_input_file, 'r')
+	
+def Nmap_Scan(f):
+	hosts_up_file = open('hosts_up.txt', 'r')
+	while True: 
+		hosts_up_ip = hosts_up_file.readline()
+		if not hosts_up_ip:
+			break
+		hosts_up_ip = hosts_up_ip.strip()
+		print(hosts_up_ip)
+	
+		with open('nmap_scan.txt', 'a') as f:
+			print(f"hosts up: {hosts_up_ip}")
+			f.write(hosts_up_ip)
+			process = subprocess.run(['nmap', '-A', '-sV', '-p-', hosts_up_ip], stdout = f)
+	f.close()
+	return f
 
-while True: 
-	check_hosts_ip = check_hosts_file.readline()
-	if not check_hosts_ip:
-		break
-	check_hosts_ip = check_hosts_ip.strip()
-	process = subprocess.Popen(['nmap', '-sP', check_hosts_ip], stdout = subprocess.PIPE, 	universal_newlines=True)
 
-	hosts = []
-	while True:
-		with open('hosts_up.txt', 'w') as file: 	 
-			output = process.stdout.readline()
-			hosts.append(output)
-			if string_HU in output:
-				ip = (hosts[-2])
-				ip = ip[ip.find('(')+1:ip.find(')')]
-				ip = ip + "\n"
-				file.write(ip)
+def Nmap_Clean_Up(f):
 
-file.close()	
 
-hosts_up_file = open('hosts_up.txt', 'r')
+def main():
+	hosts_up = Path('hosts_up.txt')
+	nmap_scan = Path('nmap_scan.txt')
+	if hosts_up.is_file():
+		os.remove(hosts_up)
+	if nmap_scan.is_file():
+		os.remove(nmap_scan)
+	Hosts_Up_Check()
+	Nmap_Scan(Hosts_Up_Check)
+	Nmap_Clean_Up(Nmap_Scan)
 
-while True: 
-	hosts_up_ip = hosts_up_file.readline()
-	if not hosts_up_ip:
-		break
-	hosts_up_ip = hosts_up_ip.strip()
-	with open('nmap_scan.txt', 'a') as file:
-		print(f"hosts up: {hosts_up_ip}")
-		file.write(hosts_up_ip)
-		process = subprocess.run(['nmap', '-A', '-sV', '-p-', hosts_up_ip], capture_output=True, text=True)
-		file.write(process.stdout)
-
-		#output = process.readline()
-		#if 'Port' in output:
-		#	port_info = process.readline()
-		#	file.write(port_info)
-			
+if __name__== '__main__':
+	main()		
