@@ -4,8 +4,7 @@ import subprocess
 import os
 import sys
 from pathlib import Path
-import xml.etree.ElementTree as Xet
-import pandas as pd
+import xmltodict
 
 def Hosts_Up_Check():
 	check_hosts_input_file = sys.argv[1]
@@ -33,15 +32,19 @@ def Hosts_Up_Check():
 
 	
 def Nmap_Scan():
-	hosts_up_file = open('hosts_up.txt', 'r')
-	#hosts_up_ip = hosts_up_file.readline()
-	#hosts_up_ip = hosts_up_ip.strip()
-	for line in hosts_up_file:
-		print(line)
-		line = line.strip()
-		file_name = line + '_nmap_output'
-		process = subprocess.run(['nmap', '-A', '-sV', '-p-', line, '-oA', file_name], universal_newlines=True)
-	hosts_up_file.close()
+	
+	process = subprocess.run(['nmap', '-A', '-sV', '-p-', '-iL', 'hosts_up.txt', '-oX', 'nmap_xml_output.xml'], universal_newlines=True)
+	xml_output = 'nmap_xml_output.xml'
+	return xml_output
+
+def Nmap_Clean_Up(f_name):
+	with open('nmap_xml_output.xml', 'r') as xml_obj:
+		nmap_dict = xmltodict.parse(xml_obj.read())
+		xml_obj.close()	
+		
+	print(f"host info address: {nmap_dict['nmaprun']['host']['address']['@addr']}")
+	print(f"host info address type: {nmap_dict['nmaprun']['host']['address']['@addrtype']}")
+
 
 def main():
 	hosts_up = Path('hosts_up.txt')
@@ -52,6 +55,7 @@ def main():
 		os.remove(nmap_scan)
 	Hosts_Up_Check()
 	Nmap_Scan()
+	Nmap_Clean_Up(Nmap_Scan())
 
 
 if __name__== '__main__':
