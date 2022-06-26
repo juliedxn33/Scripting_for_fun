@@ -32,7 +32,6 @@ def Hosts_Up_Check():
 
 	
 def Nmap_Scan():
-	
 	process = subprocess.run(['nmap', '-A', '-sV', '-p-', '-iL', 'hosts_up.txt', '-oX', 'nmap_xml_output.xml'], universal_newlines=True)
 	xml_output = 'nmap_xml_output.xml'
 	return xml_output
@@ -42,8 +41,19 @@ def Nmap_Clean_Up(f_name):
 		nmap_dict = xmltodict.parse(xml_obj.read())
 		xml_obj.close()	
 		
+	with open('xmltocsv_tool_output', 'w') as xml_debug:
+		xml_debug.write(str(nmap_dict))	
+	#print(f"I have reached this location \n\n\n {nmap_dict}")	
 	print(f"host info address: {nmap_dict['nmaprun']['host']['address']['@addr']}")
 	print(f"host info address type: {nmap_dict['nmaprun']['host']['address']['@addrtype']}")
+	print(f"host info hostname: {nmap_dict['nmaprun']['host']['hostnames']['hostname']['@name']}")
+	
+	print(f"host info port: {nmap_dict['nmaprun']['host']['ports']['port'][0]['@protocol']}")
+	print(f"host info port: {nmap_dict['nmaprun']['host']['ports']['port'][0]['@portid']}")
+	print(f"host info protocol: {nmap_dict['nmaprun']['host']['ports']['port'][0]['@protocol']}")
+	print(f"host info state: {nmap_dict['nmaprun']['host']['ports']['port'][0]['state']['@state']}")
+	
+	
 
 
 def main():
@@ -53,8 +63,8 @@ def main():
 		os.remove(hosts_up)
 	if nmap_scan.is_file():
 		os.remove(nmap_scan)
-	Hosts_Up_Check()
-	Nmap_Scan()
+	#Hosts_Up_Check()
+	#Nmap_Scan()
 	Nmap_Clean_Up(Nmap_Scan())
 
 
