@@ -6,13 +6,11 @@ NOTE: autorecon and python-nmap already have professional code to accomplish som
 I am just doing this for fun and for practice.
 
 Requirements: 
-	- python 3.10.x
-	
-	- nmap
-	
-	- xmltodict
-	
-	- pandas
+
+- python 3.10.x
+- nmap
+- xmltodict
+- pandas
 	
 	
 
