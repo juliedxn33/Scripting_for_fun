@@ -12,7 +12,8 @@ Requirements:
 - xmltodict
 - pandas
 	
-	
+Running Scanner.py: python3 Scanner.py -a <hosts_list.txt>
+Disclaimer: This code will launch nmap against the list of hosts, please do only use this against authorized machines.
 
 Below are the functions I have created so far and upcoming goals
 
@@ -26,5 +27,6 @@ Goals:
 - dirb for all 443 and 80 ports
 - xxs, sql injection, xsrf modules
 - launching other nmap scripts on susceptible services
+- added command line arguments to enable use of single functions as needed
 - multi-threaded processing for quicker turnaround time 
 	- (threads will be implemented last but is a must! Scans take an incredible amount of time and pen-tests are typically time-crunched as is)
