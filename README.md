@@ -27,4 +27,4 @@ Goals:
 - xxs, sql injection, xsrf modules
 - launching other nmap scripts on susceptible services
 - multi-threaded processing for quicker turnaround time 
-	-(threads will be implemented last but is a must! Scans take an incredible amount of time and pen-tests are typically time-crunched as is)
+	- (threads will be implemented last but is a must! Scans take an incredible amount of time and pen-tests are typically time-crunched as is)
