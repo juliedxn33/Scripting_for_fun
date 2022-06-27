@@ -18,7 +18,7 @@ Below are the functions I have created so far and upcoming goals
 
 
 Current functions:
-- ping sweep to check for hosts that are up
+- ping sweep to check for live hosts
 - nmap launch on resulting hosts for all ports with verbose output, saving results to xml file 
 - xml to csv for more readable output
 
