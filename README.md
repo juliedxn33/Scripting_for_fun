@@ -7,9 +7,13 @@ I am just doing this for fun and for practice.
 
 Requirements: 
 	- python 3.10.x
+	
 	- nmap
+	
 	- xmltodict
+	
 	- pandas
+	
 	
 
 Below are the functions I have created so far and upcoming goals
