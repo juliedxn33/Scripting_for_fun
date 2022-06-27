@@ -38,8 +38,7 @@ def Nmap_Scan():
 	xml_output = 'nmap_xml_output.xml'
 	return xml_output
 
-#cleans up "nmap_xml_output.xml" by using xmltodict library to parse data into a dict. 
-#The dict results are stored in a readable csv file. Full functionality is still being worked on.
+#cleans up "nmap_xml_output.xml" by using xmltodict library to parse data into a dict. The dict results are stored in a readable csv file. Full functionality is still being worked on.
 def Nmap_Clean_Up():
 	with open('nmap_xml_output.xml', 'r') as xml_obj:
 		nmap_dict = xmltodict.parse(xml_obj.read())
@@ -48,7 +47,7 @@ def Nmap_Clean_Up():
 	with open('xmltocsv_tool_output', 'w') as xml_debug:
 		xml_debug.write(str(nmap_dict))	
 	
-	#TODO development has been done nmapping only localhost due to lack of lab environment, how to accommodate multiple hosts?
+	#TODO development has been done nmapping only localhost due to lack of lab environment, need to create iteration for multiple hosts; similar to multiple ports code below
 			
 	rows = []
 	cols = ["Host Address", "Address Type", "Hostname", "Port", "Protocol", "State"]
@@ -64,33 +63,56 @@ def Nmap_Clean_Up():
 	addrtype = addrtype.strip("{}")
 	name = str({nmap_dict['nmaprun']['host']['hostnames']['hostname']['@name']})
 	name = name.strip("{}")
-	#TODO cycle through x ports for all port info
-	try:
-		
-		#troubleshooting print statements
-		#print(f"host info port: {nmap_dict['nmaprun']['host']['ports']['port']['@portid']}")
-		#print(f"host info protocol: {nmap_dict['nmaprun']['host']['ports']['port']['@protocol']}")
-		#print(f"host info state: {nmap_dict['nmaprun']['host']['ports']['port']['state']['@state']}")
-		
-		
-		portid = str({nmap_dict['nmaprun']['host']['ports']['port']['@portid']})
-		portid = portid.strip("{}")
-		protocol = str({nmap_dict['nmaprun']['host']['ports']['port']['@protocol']})
-		protocol = protocol.strip("{}")
-		state = str({nmap_dict['nmaprun']['host']['ports']['port']['state']['@state']})
-		state = state.strip("{}")
-		
-		rows.append({"Host Address": addr, "Address Type": addrtype, "Hostname": name, "Port": portid, "Protocol": protocol, "State" : state})
-              
 	
-	except KeyError:
-		print("Sometimes xml does weird dict stuff this might be one of those times")
-
+	#TODO cycle through x ports for all port info
+	
+	while True:
+		try:
+			portid = str({nmap_dict['nmaprun']['host']['ports']['port']['@portid']})
+			portid = portid.strip("{}")
+			if portid == '80' or '443':
+				dirb_launch(portid)	
+			protocol = str({nmap_dict['nmaprun']['host']['ports']['port']['@protocol']})
+			protocol = protocol.strip("{}")
+			state = str({nmap_dict['nmaprun']['host']['ports']['port']['state']['@state']})
+			state = state.strip("{}")
+			rows.append({"Host Address": addr, "Address Type": addrtype, "Hostname": name, "Port": portid, "Protocol": protocol, "State" : state})     
+	
+		except TypeError:
+			print("TypeError for single port test")
+			break
+		except KeyError:
+			print("KeyError for single port test")
+			break
+		
+	while True:		
+		try:
+			i = 0
+			while True:
+				portid = str({nmap_dict['nmaprun']['host']['ports']['port'][i]['@portid']})
+				portid = portid.strip("{}")
+				if portid == '80' or '443':
+					dirb_launch(portid)	
+				protocol = str({nmap_dict['nmaprun']['host']['ports']['port'][i]['@protocol']})
+				protocol = protocol.strip("{}")
+				state = str({nmap_dict['nmaprun']['host']['ports']['port']['state'][i]['@state']})
+				state = state.strip("{}")
+				rows.append({"Host Address": addr, "Address Type": addrtype, "Hostname": name, "Port": portid, "Protocol": protocol, "State" : state})
+				i += 1					
+		except TypeError:
+			print("TypeError for multi port test")
+			break
+		except KeyError:
+			print("KeyError for multi port test")
+			break
 
 	df = pd.DataFrame(rows, columns=cols)
 	# Writing dataframe to csv
 	df.to_csv('xml_to_csv_output.csv')
 
+
+def dirb_launch(addr, portid):
+	print("kicking off dirb on {portid}")
 
 
 def main():
