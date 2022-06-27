@@ -38,7 +38,8 @@ def Nmap_Scan():
 	xml_output = 'nmap_xml_output.xml'
 	return xml_output
 
-#cleans up "nmap_xml_output.xml" by using xmltodict library to parse data into a dict. The dict results are stored in a readable csv file. Full functionality is still being worked on.
+#cleans up "nmap_xml_output.xml" by using xmltodict library to parse data into a dict. 
+#The dict results are stored in a readable csv file. Full functionality is still being worked on.
 def Nmap_Clean_Up():
 	with open('nmap_xml_output.xml', 'r') as xml_obj:
 		nmap_dict = xmltodict.parse(xml_obj.read())
