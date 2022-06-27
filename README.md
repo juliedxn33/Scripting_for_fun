@@ -17,17 +17,12 @@ Running Scanner.py: python3 Scanner.py -a <hosts_list.txt>
 Disclaimer: This code will launch nmap against the list of hosts, please only use this against authorized machines.
 
 
-
-
-
-Functions and upcoming goals
-
-Current functions:
+Scanner.py current functions:
 - ping sweep to check for live hosts
 - nmap launch on resulting hosts for all ports with verbose output, saving results to xml file 
 - xml to csv for more readable output
 
-Goals:
+Scanner.py goals:
 - dirb for all 443 and 80 ports
 - xxs, sql injection, xsrf modules
 - launching other nmap scripts on susceptible services
