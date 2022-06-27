@@ -1,6 +1,6 @@
 Thanks for taking the time to look at my project!
 
-I am currently working a scanner to help automate the enumeration phase of a pen-test.
+I am currently working on a scanner to help automate the enumeration phase of a pen-test.
 NOTE: autorecon and python-nmap already have professional code to accomplish some of the functionality I am working on. 
 I am just doing this for fun and for practice.
 
