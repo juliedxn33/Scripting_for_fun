@@ -11,12 +11,16 @@ Requirements:
 - nmap
 - xmltodict
 - pandas
-	
+
 Running Scanner.py: python3 Scanner.py -a <hosts_list.txt>
-Disclaimer: This code will launch nmap against the list of hosts, please do only use this against authorized machines.
 
-Below are the functions I have created so far and upcoming goals
+Disclaimer: This code will launch nmap against the list of hosts, please only use this against authorized machines.
 
+
+
+
+
+Functions and upcoming goals
 
 Current functions:
 - ping sweep to check for live hosts
